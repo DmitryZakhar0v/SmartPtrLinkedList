@@ -37,7 +37,6 @@ bool operator==(const List<T>& rha, const List<T>& lha) noexcept;
 template<typename T>
 bool operator!=(const List<T>& rha, const List<T>& lha) noexcept;
 
-
 /*
 @brief Класс, описывающий линейный односвязный список
 */
@@ -47,7 +46,7 @@ class List
 public:
 
 	/*
-	* @brief Создает пустой объект лжносвязного списка
+	* @brief Создает пустой объект линейного односвязного списка
 	*/
 	List();
 
@@ -58,15 +57,58 @@ public:
 	List(const std::initializer_list<T> list);
 
 	/*
-	* @brief Очищает список
+	* @brief Деструктор, чистит память при удалении объекта 
 	*/
-	void clear();
+	~List();
+
+	/*
+	* @brief Конструктор копирования
+	* @param list Список для копирования
+	*/
+	List(const List<T>& list);
+
+	/*
+	* @brief Конструктор перемещения
+	* @param list Список для перемещения
+	*/
+	List(List<T>&& list) noexcept;
+
+	/*
+	* @brief Оператор копирования
+	* @param list Список для копирования
+	* @return Скопированный List
+	*/
+	List<T>& operator=(const List<T>& list);
+
+	/*
+	* @brief Оператор перемещения
+	* @param list Список для перемещения
+	* @return Перемещенный List
+	*/
+	List<T>& operator=(List<T>&& list) noexcept;
+
+	/*
+	* @brief Проверка наличия элементов в списке
+	* @return true - есть элементы, иначе false
+	*/
+	bool has_elements() const noexcept;
+
+	/*
+	* @brief Проверка отсутствия элементов в списке
+	* @return true - нет элементов, иначе false
+	*/
+	bool is_empty() const noexcept;
 
 	/*
 	* @brief Преобразует список в строку
 	* @return Строка, созданная по списку
 	*/
 	std::string to_string() const noexcept;
+
+	/*
+	* @brief Очищает список
+	*/
+	void clear();
 
 	/*
 	* @brief Добавления элемента в список
@@ -84,44 +126,6 @@ public:
 	* @return true - если есть, иначе false
 	*/
 	bool find(const T& item);
-
-	/*
-	* @brief Проверка наличия элементов в списке
-	* @return true - есть элементы, иначе false
-	*/
-	bool has_elements() const noexcept;
-
-	/*
-	* @brief Проверка отсутствия элементов в списке
-	* @return true - нет элементов, иначе false
-	*/
-	bool is_empty() const noexcept;
-
-	/*
-	* @brief Оператор копирования
-	* @param list Список для копирования
-	* @return Скопированный List
-	*/
-	List<T>& operator=(const List<T>& list);
-
-	/*
-	* @brief Оператор перемещения
-	* @param list Список для перемещения
-	* @return Перемещенный List
-	*/
-	List<T>& operator=(List<T>&& list) noexcept;
-
-	/*
-	* @brief Конструктор копирования
-	* @param list Список для копирования
-	*/
-	List(const List<T>& list);
-
-	/*
-	* @brief Конструктор перемещения
-	* @param list Список для перемещения
-	*/
-	List(List<T>&& list) noexcept;
 
 private:
 
@@ -148,7 +152,6 @@ private:
 
 };
 
-
 template<typename T>
 inline List<T>::List()
 	:head{ nullptr }
@@ -164,10 +167,17 @@ inline List<T>::List(const std::initializer_list<T> list)
 	{
 		temp.insert(temp.begin(), item);
 	}
+
 	for (size_t i = 0; i < temp.size(); i++)
 	{
 		this->push(temp[i]);
 	}
+}
+
+template<typename T>
+inline List<T>::~List()
+{
+	this->clear();
 }
 
 template<typename T>
