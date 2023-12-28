@@ -37,6 +37,7 @@ bool operator==(const List<T>& rha, const List<T>& lha) noexcept;
 template<typename T>
 bool operator!=(const List<T>& rha, const List<T>& lha) noexcept;
 
+
 /*
 @brief Класс, описывающий линейный односвязный список
 */
@@ -46,7 +47,7 @@ class List
 public:
 
 	/*
-	* @brief Создает пустой объект линейного односвязного списка
+	* @brief Создает пустой объект лжносвязного списка
 	*/
 	List();
 
@@ -57,58 +58,20 @@ public:
 	List(const std::initializer_list<T> list);
 
 	/*
-	* @brief Деструктор, чистит память при удалении объекта 
+	* @brief Деструктор, чистит память при удалении объекта
 	*/
 	~List();
 
 	/*
-	* @brief Конструктор копирования
-	* @param list Список для копирования
+	* @brief Очищает список
 	*/
-	List(const List<T>& list);
-
-	/*
-	* @brief Конструктор перемещения
-	* @param list Список для перемещения
-	*/
-	List(List<T>&& list) noexcept;
-
-	/*
-	* @brief Оператор копирования
-	* @param list Список для копирования
-	* @return Скопированный List
-	*/
-	List<T>& operator=(const List<T>& list);
-
-	/*
-	* @brief Оператор перемещения
-	* @param list Список для перемещения
-	* @return Перемещенный List
-	*/
-	List<T>& operator=(List<T>&& list) noexcept;
-
-	/*
-	* @brief Проверка наличия элементов в списке
-	* @return true - есть элементы, иначе false
-	*/
-	bool has_elements() const noexcept;
-
-	/*
-	* @brief Проверка отсутствия элементов в списке
-	* @return true - нет элементов, иначе false
-	*/
-	bool is_empty() const noexcept;
+	void clear();
 
 	/*
 	* @brief Преобразует список в строку
 	* @return Строка, созданная по списку
 	*/
 	std::string to_string() const noexcept;
-
-	/*
-	* @brief Очищает список
-	*/
-	void clear();
 
 	/*
 	* @brief Добавления элемента в список
@@ -127,10 +90,48 @@ public:
 	*/
 	bool find(const T& item);
 
+	/*
+	* @brief Проверка наличия элементов в списке
+	* @return true - есть элементы, иначе false
+	*/
+	bool has_elements() const noexcept;
+
+	/*
+	* @brief Проверка отсутствия элементов в списке
+	* @return true - нет элементов, иначе false
+	*/
+	bool is_empty() const noexcept;
+
+	/*
+	* @brief Оператор копирования
+	* @param list Список для копирования
+	* @return Скопированный List
+	*/
+	List<T>& operator=(const List<T>& list);
+
+	/*
+	* @brief Оператор перемещения
+	* @param list Список для перемещения
+	* @return Перемещенный List
+	*/
+	List<T>& operator=(List<T>&& list) noexcept;
+
+	/*
+	* @brief Конструктор копирования
+	* @param list Список для копирования
+	*/
+	List(const List<T>& list) = default;
+
+	/*
+	* @brief Конструктор перемещения
+	* @param list Список для перемещения
+	*/
+	List(List<T>&& list) = default;
+
 private:
 
 	/*
-	* @brief Класс, описывабщий элемент списка
+	* @brief Класс, описывающий элемент списка
 	*/
 	template<typename T>
 	class Node
@@ -142,7 +143,7 @@ private:
 		@param next_node Следующий элемент списка
 		*/
 		Node(const T& value)
-			:value{ value }, next_node{ nullptr }{};
+			:value{ value }, next_node{ nullptr } {};
 
 		std::unique_ptr<Node<T>> next_node;
 		T value;
@@ -167,7 +168,6 @@ inline List<T>::List(const std::initializer_list<T> list)
 	{
 		temp.insert(temp.begin(), item);
 	}
-
 	for (size_t i = 0; i < temp.size(); i++)
 	{
 		this->push(temp[i]);
@@ -177,13 +177,21 @@ inline List<T>::List(const std::initializer_list<T> list)
 template<typename T>
 inline List<T>::~List()
 {
-	this->clear();
+	while (head)
+	{
+		auto next = std::move(head->next_node);
+		head = std::move(next);
+	}
 }
 
 template<typename T>
 inline void List<T>::clear()
 {
-	this->head = nullptr;
+	while (head)
+	{
+		auto next = std::move(head->next_node);
+		head = std::move(next);
+	}
 }
 
 
@@ -274,32 +282,6 @@ inline List<T>& List<T>::operator=(List<T>&& list) noexcept
 		std::swap(this->head, list.head);
 	}
 	return *this;
-}
-
-template<typename T>
-inline List<T>::List(const List<T>& list)
-	:head{ nullptr }
-{
-	List<T> temp;
-	std::vector<T> invetred;
-	for (auto node = list.head.get(); node != nullptr; node = node->next_node.get())
-	{
-		invetred.insert(invetred.begin(), node->value);
-	}
-
-	for (size_t i = 0; i < invetred.size(); i++)
-	{
-		temp.push(invetred[i]);
-	}
-	std::swap(this->head, temp.head);
-}
-
-
-template<typename T>
-inline List<T>::List(List<T>&& list) noexcept
-	:head{ nullptr }
-{
-	std::swap(this->head, list.head);
 }
 
 template<typename T>
