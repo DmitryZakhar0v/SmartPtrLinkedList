@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{80ee77cb-6705-465b-b439-fca1784e8f8b}</ProjectGuid>
-    <RootNamespace>LinkedListSmartPtr</RootNamespace>
+    <ProjectGuid>{20f5a6b3-5ed9-4fcb-aa50-a3d81d7d653e}</ProjectGuid>
+    <RootNamespace>Demo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -128,10 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="List.h" />
+    <ClCompile Include="Demo.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="List.cpp" />
+    <ProjectReference Include="..\LinkedListSmartPtr\LinkedListSmartPtr.vcxproj">
+      <Project>{80ee77cb-6705-465b-b439-fca1784e8f8b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
